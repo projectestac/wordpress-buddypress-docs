@@ -234,6 +234,20 @@ class BP_Docs_Taxonomy {
 				$tags[$key] = esc_attr( $value );
 			}
 
+            // XTEC ************ MODIFICAT - Fixed bug with AND operator
+            // 2016.04.27 @sarjona
+			$tax_query_tmp = array(
+				'taxonomy'	=> $this->docs_tag_tax_name,
+				'terms'		=> $tags,
+				'field'		=> 'slug',
+			);
+
+			if ( !empty( $_REQUEST['bool'] ) && $_REQUEST['bool'] == 'and' ) {
+				$tax_query_tmp['operator'] = 'AND';
+			}
+			array_push($tax_query, $tax_query_tmp);
+            //************ ORIGINAL
+            /*
 			$tax_query[] = array(
 				'taxonomy'	=> $this->docs_tag_tax_name,
 				'terms'		=> $tags,
@@ -243,6 +257,8 @@ class BP_Docs_Taxonomy {
 			if ( !empty( $_REQUEST['bool'] ) && $_REQUEST['bool'] == 'and' ) {
 				$tax_query['operator'] = 'AND';
 			}
+			*/
+            //************ FI
 		}
 
 		return apply_filters( 'bp_docs_modify_tax_query_for_tax', $tax_query );
@@ -357,7 +373,18 @@ class BP_Docs_Taxonomy {
 
 					?>
 					<li>
+		            <!--
+		            // XTEC ************ MODIFICAT - Add style for selected tags
+		            // 2016.04.27 @sarjona
+		            -->
+					<?php
+						$tags = explode( ',', urldecode( $_GET['bpd_tag'] ) );
+					?>
+					<a href="<?php echo bp_docs_get_tag_link_multitag( array( 'tag' => $term, 'type' => 'url', 'tags' => $tags ) ) ?>" title="<?php echo esc_html( $term_name ) ?>" <?php echo (in_array($term, $tags)?' class="selected-tag"':''); ?> ><?php echo esc_html( $term_name ) ?> <?php printf( __( '(%d)', 'bp-docs' ), $term_count ) ?></a>
+		            <!--//************ ORIGINAL
 					<a href="<?php echo bp_docs_get_tag_link( array( 'tag' => $term, 'type' => 'url' ) ) ?>" title="<?php echo esc_html( $term_name ) ?>"><?php echo esc_html( $term_name ) ?> <?php printf( __( '(%d)', 'bp-docs' ), $term_count ) ?></a>
+		            //************ FI
+		            -->
 					</li>
 
 				<?php endforeach ?>
@@ -470,6 +497,74 @@ function bp_docs_get_tag_link( $args = array() ) {
 
 	return apply_filters( 'bp_docs_get_tag_link', $html, $url, $tag, $type );
 }
+
+// XTEC ************ AFEGIT - Added support for multitag
+// 2016.04.27 @sarjona
+/**
+ * Get an archive link for a given tag
+ *
+ * Optional arguments:
+ *  - 'tag' 	The tag linked to. This one is required
+ *  - 'type' 	'html' returns a link; anything else returns a URL
+ *  - 'tags'    The selected tags
+ *
+ * @param array $args Optional arguments
+ * @return array $filters
+ */
+function bp_docs_get_tag_link_multitag( $args = array() ) {
+	global $bp;
+
+	$defaults = array(
+		'tag' 	=> false,
+		'type' 	=> 'html',
+		'tags'  => array(),
+	);
+
+	$r = wp_parse_args( $args, $defaults );
+	extract( $r, EXTR_SKIP );
+
+	if ( bp_is_user() ) {
+		$current_action = bp_current_action();
+		$item_docs_url = bp_displayed_user_domain() . bp_docs_get_docs_slug() . '/';
+		if ( empty( $current_action ) || BP_DOCS_STARTED_SLUG == $current_action ) {
+			$item_docs_url = bp_docs_get_displayed_user_docs_started_link();
+		} elseif ( BP_DOCS_EDITED_SLUG == $current_action ) {
+			$item_docs_url = bp_docs_get_displayed_user_docs_edited_link();
+		}
+	} elseif ( bp_is_active( 'groups' ) && $current_group = groups_get_current_group() ) {
+		/*
+		 * Pass the group object to bp_get_group_permalink() so that it works
+		 * when $groups_template may not be set, like during AJAX requests.
+		 */
+		$item_docs_url = trailingslashit( bp_get_group_permalink( $current_group ) . bp_docs_get_docs_slug() );
+	} else {
+		$item_docs_url = bp_docs_get_archive_link();
+	}
+
+	$bdp_tags = $tags;
+	if (in_array($tag, $bdp_tags)){
+		// Remove because tag is selected
+		$tag_key = array_search($tag, $bdp_tags);
+		if($tag_key !== FALSE) {
+    		unset($bdp_tags[$tag_key]);
+		}
+	} else {
+		$bdp_tags[] = urlencode($tag);
+	}
+	if (!empty($_REQUEST['bool'])) {
+		$item_docs_url = add_query_arg( 'bool', $_REQUEST['bool'], $item_docs_url );
+	}
+	$bdp_tags = implode(',', array_filter($bdp_tags));
+	$url = apply_filters( 'bp_docs_get_tag_link_url', add_query_arg( 'bpd_tag', $bdp_tags, $item_docs_url ), $args, $item_docs_url );
+
+	if ( $type != 'html' )
+		return apply_filters( 'bp_docs_get_tag_link_url', $url, $tag, $type );
+
+	$html = '<a href="' . $url . '" title="' . sprintf( __( 'Docs tagged %s', 'bp-docs' ), esc_attr( $tag ) ) . '">' . esc_html( $tag ) . '</a>';
+
+	return apply_filters( 'bp_docs_get_tag_link', $html, $url, $tag, $type );
+}
+//************ FI
 
 /**
  * Display post tags form fields. Based on WP core's post_tags_meta_box()
