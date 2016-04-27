@@ -1322,7 +1322,14 @@ body.bp-docs-body-theme-twentysixteen article.type-bp_doc .entry-content {
 .genericon-downarrow:before {       content: '\f502'; }
 .genericon-leftarrow:before {       content: '\f503'; }
 
-
+/* XTEC ************ AFEGIT - Added support for multitag - To apply this change is necessary to generate and compress with sass css/screen.css */
+/* 2016.04.27 @sarjona */
+.selected-tag{
+    font-weight: 900;
+    border: solid 1px;
+    padding: 0px 3px;
+}
+/************ FI */
 
 
 
