@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: BuddyPress Docs 1.7.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/buddypress-docs\n"
 "POT-Creation-Date: 2015-10-02 14:58:58+00:00\n"
-"PO-Revision-Date: 2016-02-10 00:33+0100\n"
-"Last-Translator: Toni Ginard <toni.ginard@gmail.com>\n"
+"PO-Revision-Date: 2016-04-27 16:18+0100\n"
+"Last-Translator: Sara Arjona Téllez <sarjona@xtec.cat>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
@@ -1167,6 +1167,22 @@ msgstr "Boone B Gorges"
 #. Author URI of the plugin/theme
 msgid "http://boone.gorg.es"
 msgstr "http://boone.gorg.es"
+
+# AFEGIT XTEC
+msgid ""
+"<strong><a href=\"%s\" title=\"View Docs with some of the selected tags"
+"\">View Docs with some of the selected tags</a></strong>"
+msgstr ""
+"<strong><a href=\"%s\" title=\"Visualitza documents amb alguna de les "
+"etiquetes seleccionades\">Només alguna etiqueta</a></strong>"
+
+# AFEGIT XTEC
+msgid ""
+"<strong><a href=\"%s\" title=\"View Docs with all selected tags\">View Docs "
+"with all selected tags</a></strong>"
+msgstr ""
+"<strong><a href=\"%s\" title=\"Visualitza documents amb totes les etiquetes "
+"seleccionades\">Totes les etiquetes</a></strong>"
 
 #~ msgid "Show New Docs"
 #~ msgstr "Mostra els documents nous"
