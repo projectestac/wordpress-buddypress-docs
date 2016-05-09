@@ -261,7 +261,7 @@ class BP_Docs_Taxonomy {
 			if ( !empty( $_REQUEST['bool'] ) && $_REQUEST['bool'] == 'and' ) {
 				$tax_query_tmp['operator'] = 'AND';
 			}
-			array_push($tax_query, $tax_query_tmp);
+			array_push( $tax_query, $tax_query_tmp );
             //************ ORIGINAL
             /*
 			$tax_query[] = array(
@@ -389,10 +389,8 @@ class BP_Docs_Taxonomy {
 
 					?>
 					<li>
-		            <!--
-		            // XTEC ************ MODIFICAT - Add style for selected tags - 2016.04.27 @sarjona
-		            -->
 					<?php
+						// XTEC ************ MODIFICAT - Add style for selected tags - 2016.04.27 @sarjona
 						$tags = explode( ',', urldecode( $_GET['bpd_tag'] ) );
 					?>
 					<a href="<?php echo bp_docs_get_tag_link_multitag( array( 'tag' => $term, 'type' => 'url', 'tags' => $tags ) ) ?>" title="<?php echo esc_html( $term_name ) ?>" <?php echo (in_array($term, $tags)?' class="selected-tag"':''); ?> ><?php echo esc_html( $term_name ) ?> <?php printf( __( '(%d)', 'bp-docs' ), $term_count ) ?></a>
@@ -553,19 +551,19 @@ function bp_docs_get_tag_link_multitag( $args = array() ) {
 	}
 
 	$bdp_tags = $tags;
-	if (in_array($tag, $bdp_tags)){
+	if ( in_array( $tag, $bdp_tags ) ) {
 		// Remove because tag is selected
-		$tag_key = array_search($tag, $bdp_tags);
-		if($tag_key !== FALSE) {
-    		unset($bdp_tags[$tag_key]);
+		$tag_key = array_search( $tag, $bdp_tags );
+		if( $tag_key !== FALSE ) {
+    		unset( $bdp_tags[ $tag_key ] );
 		}
 	} else {
-		$bdp_tags[] = urlencode($tag);
+		$bdp_tags[] = urlencode( $tag );
 	}
-	if (!empty($_REQUEST['bool'])) {
+	if ( !empty( $_REQUEST['bool'] ) ) {
 		$item_docs_url = add_query_arg( 'bool', $_REQUEST['bool'], $item_docs_url );
 	}
-	$bdp_tags = implode(',', array_filter($bdp_tags));
+	$bdp_tags = implode( ',', array_filter( $bdp_tags ) );
 	$url = apply_filters( 'bp_docs_get_tag_link_url', add_query_arg( 'bpd_tag', $bdp_tags, $item_docs_url ), $args, $item_docs_url );
 
 	if ( $type != 'html' )
