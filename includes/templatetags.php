@@ -267,12 +267,12 @@ function bp_docs_info_header() {
 
 			// XTEC ************ AFEGIT - Added support for multitag
 			// 2016.04.27 @sarjona
-			if (!empty($_REQUEST['bool']) && $_REQUEST['bool']==='and' ) {
+			if ( !empty( $_REQUEST['bool'] ) && $_REQUEST['bool'] === 'and' ) {
 				// AND operator is enabled so show "OR" link
-				$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View Docs with some of the selected tags">View Docs with some of the selected tags</a></strong>', 'bp-docs' ), add_query_arg( 'bool', 'or' ) );
-			} else{
+				$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View Docs with some of the selected tags">Viewing docs with each of these tags</a></strong>', 'bp-docs' ), add_query_arg( 'bool', 'or' ) );
+			} else {
 				// OR operator is enabled so show "AND" link
-				$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View Docs with all selected tags">View Docs with all selected tags</a></strong>', 'bp-docs' ), add_query_arg( 'bool', 'and' ) );
+				$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View Docs with all selected tags">Viewing docs with some of these tags</a></strong>', 'bp-docs' ), add_query_arg( 'bool', 'and' ) );
 			}
 			//************ FI
 			$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View All Docs">View All Docs</a></strong>', 'bp-docs' ), remove_query_arg( $filter_args ) );
