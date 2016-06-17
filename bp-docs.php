@@ -301,16 +301,7 @@ class BP_Docs {
 			'rewrite'      => array(
 				'slug'       => bp_docs_get_docs_slug(),
 				'with_front' => false
-
-            // XTEC ************ MODIFICAT - Don't show option in admin menu because of custom menu
-            // 2014.07.21 @aginard
-			),
-            'show_in_menu'        => false,
-            //************ ORIGINAL
-            /*
    			)
-            */
-            //************ FI
 
         ) );
 
@@ -327,14 +318,7 @@ class BP_Docs {
 		register_taxonomy( $this->associated_item_tax_name, array( $this->post_type_name ), array(
 			'labels'       => $associated_item_labels,
 			'hierarchical' => true,
-			// XTEC ************ MODIFICAT - Hide associate elements box (Don't show option in admin menu)
-			// 2015.07.13 @nacho
-			'show_ui'      => false,
-			//************ ORIGINAL
-			/*
 			'show_ui'      => true,
-			*/
-            //************ FI
 			'query_var'    => true,
 			'rewrite'      => array( 'slug' => 'item' ),
 		) );
