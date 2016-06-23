@@ -1207,3 +1207,16 @@ function bp_docs_force_unique_slugs( $slug, $post_ID, $post_status, $post_type, 
 	return $alt_post_name;
 }
 add_filter( 'wp_unique_post_slug', 'bp_docs_force_unique_slugs', 10, 6 );
+
+// XTEC ************ AFEGIT ­ Suggest labels into documents - bp-docs - 2016.06.23 @xaviernietosanchez
+function add_suggest_script() {
+	wp_enqueue_script( 'jquery' );
+	wp_enqueue_script( 'jquery-ui-autocomplete' );
+	wp_register_style( 'jquery-ui-styles','https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' );
+	wp_enqueue_style( 'jquery-ui-styles' );
+	wp_register_script( 'suggest_complete', plugins_url('/js/suggest_complete.js',__FILE__), array( 'jquery', 'jquery-ui-autocomplete' ), '1.0', false );
+	wp_localize_script( 'suggest_complete', 'SuggestComplete', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+	wp_enqueue_script( 'suggest_complete' );
+}
+add_action( 'wp_enqueue_scripts', 'add_suggest_script' );
+//************ FI
