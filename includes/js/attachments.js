@@ -28,6 +28,10 @@ window.wp = window.wp || {};
 			success: function(s) {
 				$('#doc-attachments-ul').prepend(s.data);
 				file_frame.close();
+				// XTEC ************ AFEGIT ­Fix when attachment image into new document, no show image to select it
+				// 2016.07.05 @xaviernietosanchez
+				change_select_to_show_image();
+				// ************ FI
 			}
 		} );
 	};
@@ -64,4 +68,20 @@ window.wp = window.wp || {};
 			Library.frame.content.mode('upload');
 		} );
 	});
+
+	// XTEC ************ AFEGIT ­Fix when attachment image into new document, no show image to select it
+	// 2016.07.05 @xaviernietosanchez
+	function change_select_to_show_image(id){
+		if ( $('#media-attachment-filters').length > 0 ){
+			if ( $('#media-attachment-filters option:selected').text() == 'Tots els fitxers multimèdia' ){
+				jQuery('#media-attachment-filters>option:eq(1)').attr("selected","selected");
+				jQuery('#media-attachment-filters').trigger("change");
+				if( jQuery('div[class="media-toolbar-primary search-form"]').length > 0 ){
+					jQuery('div[class="media-toolbar-primary search-form"]').find('button').removeClass('button');
+				}
+			}
+		}
+	}
+	// ************ FI
+
 })(jQuery);
