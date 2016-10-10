@@ -509,6 +509,7 @@ function bp_docs_get_tag_link( $args = array() ) {
 
 // XTEC ************ AFEGIT - Added support for multitag
 // 2016.04.27 @sarjona
+// 2016.10.10 @xaviernietosanchez
 /**
  * Get an archive link for a given tag
  *
@@ -562,6 +563,11 @@ function bp_docs_get_tag_link_multitag( $args = array() ) {
 	}
 	if ( !empty( $_REQUEST['bool'] ) ) {
 		$item_docs_url = add_query_arg( 'bool', $_REQUEST['bool'], $item_docs_url );
+	} else {
+		/*
+		 * If not exist boolean argument, default add "and" condition
+		 */
+		$item_docs_url = add_query_arg( 'bool', 'and', $item_docs_url );
 	}
 	$bdp_tags = implode( ',', array_filter( $bdp_tags ) );
 	$url = apply_filters( 'bp_docs_get_tag_link_url', add_query_arg( 'bpd_tag', $bdp_tags, $item_docs_url ), $args, $item_docs_url );
