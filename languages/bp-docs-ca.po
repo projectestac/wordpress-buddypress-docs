@@ -1440,11 +1440,11 @@ msgstr "http://boone.gorg.es"
 
 # AFEGIT XTEC
 msgid ""
-"<strong><a href=\"%s\" title=\"View Docs with all selected tags\">Viewing docs with some of these tags</a></strong>"
+"<strong><a href=\"%s\" title=\"View Docs with some of the selected tags\">Viewing docs with some of these tags</a></strong>"
 msgstr "<strong><a href=\"%s\" title=\"Visualitza documents amb totes les etiquetes seleccionades\">Documents amb alguna etiqueta</a></strong>"
 
 # AFEGIT XTEC
 msgid ""
-"<strong><a href=\"%s\" title=\"View Docs with some of the selected tags\">Viewing docs with each of these tags</a></strong>"
+"<strong><a href=\"%s\" title=\"View Docs with all selected tags\">Viewing docs with each of these tags</a></strong>"
 msgstr ""
 "<strong><a href=\"%s\" title=\"Visualitza documents amb alguna de les etiquetes seleccionades\">Documents amb totes les etiquetes</a></strong>"
