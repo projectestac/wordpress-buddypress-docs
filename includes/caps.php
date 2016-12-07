@@ -38,6 +38,13 @@ function bp_docs_map_meta_caps( $caps, $cap, $user_id, $args ) {
 			// Reset all caps. We bake from scratch
 			$caps = array();
 
+			// XTEC ************ AFEGIT - Contributor role can't create documents
+			// 2016.12.07 @xaviernietosanchez
+			$bpuser_docs = wp_get_current_user();
+    		$bproles_docs = (array) $bpuser_docs->roles;
+
+		    if ( ! in_array( 'contributor', $bproles_docs ) && ! in_array( 'subscriber', $bproles_docs ) ){
+		    // ************ FI
 			// Should never get here if there's no user
 			if ( ! $user_id ) {
 				$caps[] = 'do_not_allow';
@@ -46,6 +53,12 @@ function bp_docs_map_meta_caps( $caps, $cap, $user_id, $args ) {
 			} else {
 				$caps[] = 'exist';
 			}
+			// XTEC ************ AFEGIT - Contributor role can't create documents
+			// 2016.12.07 @xaviernietosanchez
+		    } else {
+		    	$caps[] = 'do_not_allow';
+		    }
+		    // ************ FI
 
 			break;
 
