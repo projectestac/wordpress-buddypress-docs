@@ -2,9 +2,9 @@
 Contributors: boonebgorges, cuny-academic-commons, dcavins
 Donate link: http://teleogistic.net/donate
 Tags: buddypress, docs, wiki, documents, collaboration
-Requires at least: WordPress 3.3, BuddyPress 1.5
-Tested up to: WordPress 4.6, BuddyPress 2.7
-Stable tag: 1.9.2
+Requires at least: 3.3
+Tested up to: 4.9
+Stable tag: 2.0.1
 
 Adds collaborative Docs to BuddyPress.
 
@@ -29,9 +29,27 @@ This plugin is in active development. For feature requests and bug reports, visi
 
 1. Install
 1. Activate
-1. Sit back and watch the jack roll in
+1. Sit back and watch the jack roll in.
 
 == Changelog ==
+
+= 2.0.1 =
+* Fixed bug that caused original author info to be lost when a doc was edited by another user.
+
+= 2.0.0 =
+* Began using the WordPress.org translation service. This will require action by some users:
+*    If you use a custom translation, it must be renamed and moved to this location: wp-content/languages/plugins/buddypress-docs-LOCALE.mo. E.g., wp-content/languages/plugins/buddypress-docs-es_ES.mo
+*    If you use custom template parts, all text domain identifiers must be updated to 'buddypress-docs'.
+* Improved privacy of comments on limited access Docs.
+* Improved success messaging when saving admin settings.
+* Fixed bug that caused edited doc to appear in its own Parent dropdown.
+
+= 1.9.4 =
+* Fixed bug that caused post global variables to be improperly set after use of the widget, which interfered with template generation in certain cases.
+
+= 1.9.3 =
+* Fixed security issue that made it possible to edit certain Docs without proper permissions. Thanks to Ewoud Vlasselaer, Eric Schayes, and Nabeel Ahmed for discovering and privately reporting this issue.
+* Fixed bug in Edit Lock functionality that caused locks to be removed improperly on certain link clicks.
 
 = 1.9.2 =
 * Fixed bug that caused attachments to be corrupted in some cases.
