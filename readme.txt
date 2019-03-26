@@ -3,8 +3,8 @@ Contributors: boonebgorges, cuny-academic-commons, dcavins
 Donate link: http://teleogistic.net/donate
 Tags: buddypress, docs, wiki, documents, collaboration
 Requires at least: 3.3
-Tested up to: 4.9
-Stable tag: 2.0.1
+Tested up to: 5.0
+Stable tag: 2.1.2
 
 Adds collaborative Docs to BuddyPress.
 
@@ -32,6 +32,37 @@ This plugin is in active development. For feature requests and bug reports, visi
 1. Sit back and watch the jack roll in.
 
 == Changelog ==
+
+= 2.1.2 =
+* Added context-awareness option for Docs widget
+* Improved compatibility checks for various PHP versions.
+* Improved compatibility with Smart Slider plugin and other plugins leveraging 'upload_dir' filter.
+* Improved compatibility with WP_Query post caching.
+* Improved performance when filtering activity queries for off-limits Docs activity.
+* Fixed a broken textdomain
+
+= 2.1.1 =
+* Improved behavior of "anyone can comment" setting.
+* Fixed regression in Docs 2.1.0 that broke compatibility with PHP 5.3 and PHP 5.4.
+* Fixed bug that could cause access settings to be rendered incorrectly in some cases where `bp_docs_get_current_doc()` is filtered by a plugin.
+* Fixed regression in BuddyPress that prevented access to author-only documents in some cases.
+
+= 2.1.0 =
+* Improved support for BuddyPress 3.0 and the Nouveau template pack.
+* Improved Doc search to match attachment filenames.
+* Fixed bug that caused revision count to be incorrect in some cases.
+* Added filters to modify default toggle open/closed state on Doc edit/create.
+* Fixed bug that caused Docs activity filters to appear in groups where Docs was not enabled.
+* Search terms are now highlighted on search results page.
+* Improved compatibility with PHP 7.2+.
+* Added right-to-left versions of stylesheets.
+* Fixed bug that caused Docs with identical slugs to have conflicting URLs.
+* Fixed bug that caused 'View All Docs' link on search results to paginate incorrectly.
+* Fixed bug that caused new directory searches not to reset pagination.
+* Use Akismet to check new Docs for spam content.
+* Move Docs between folders using drag and drop.
+* Improved support for themes that don't use BP theme compatibility.
+* Accessibility improvements.
 
 = 2.0.1 =
 * Fixed bug that caused original author info to be lost when a doc was edited by another user.
