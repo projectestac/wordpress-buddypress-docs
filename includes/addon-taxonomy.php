@@ -391,11 +391,7 @@ class BP_Docs_Taxonomy {
 					<li>
 					<?php
 						// XTEC ************ MODIFICAT - Add style for selected tags - 2016.04.27 @sarjona
-                        // @nacho: 2019.07.19 check if variable is defined
-						$tags = array();
-                        if (isset($_GET['bpd_tag'])) {
-                            $tags = explode( ',', urldecode( $_GET['bpd_tag'] ) );
-                        }
+						$tags = explode( ',', urldecode( $_GET['bpd_tag'] ) );
 					?>
 					<a href="<?php echo bp_docs_get_tag_link_multitag( array( 'tag' => $term, 'type' => 'url', 'tags' => $tags ) ) ?>" title="<?php echo esc_html( $term_name ) ?>" <?php echo (in_array($term, $tags)?' class="selected-tag"':''); ?> ><?php echo esc_html( $term_name ) ?> <?php printf( __( '(%d)', 'bp-docs' ), $term_count ) ?></a>
 					</li>
@@ -612,7 +608,7 @@ function bp_docs_post_tags_meta_box() {
 	$taxonomy = get_taxonomy( $taxonomy );
 
 	// If this is a failed submission, use the value from the POST cookie
-	if ( ! empty( buddypress()->bp_docs->submitted_data->{$tax_name} ) ) {
+	if ( isset( buddypress()->bp_docs->submitted_data->{$tax_name} ) ) {
 		$terms = buddypress()->bp_docs->submitted_data->{$tax_name};
 
 	// If it's an existing Doc, look up the terms

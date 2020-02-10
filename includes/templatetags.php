@@ -275,8 +275,26 @@ function bp_docs_info_header() {
 				// OR operator is enabled so show "AND" link
 				$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View Docs with all selected tags">Viewing docs with each of these tags</a></strong>', 'bp-docs' ), add_query_arg( 'bool', 'and' ) );
 			}
+			
+			//************ ORIGINAL
+			/*						
+			$view_all_url = remove_query_arg( $filter_args );
+
+			// Try to remove any pagination arguments.
+			$view_all_url = remove_query_arg( 'p', $view_all_url );
+			$view_all_url = preg_replace( '|page/[0-9]+/|', '', $view_all_url );
+			*/
 			//************ FI
+
+			// XTEC ************ MODIFICAT - Added support for multitag
+			// 2020.02.10 @nacho
 			$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View All Docs">View All Docs</a></strong>', 'bp-docs' ), remove_query_arg( $filter_args ) );
+
+			//************ ORIGINAL
+			/*
+			$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View All Docs">View All Docs</a></strong>', 'buddypress-docs' ), $view_all_url );
+			*/
+			//************ FI
 		}
 
 		?>
@@ -1012,8 +1030,9 @@ function bp_docs_doc_associated_group_markup() {
 
 	// Last check: if this is a second attempt at a newly created Doc,
 	// there may be a previously submitted value
-	if ( empty( $selected_group ) && ! empty( buddypress()->bp_docs->submitted_data->associated_group_id ) ) {
-		$selected_group = buddypress()->bp_docs->submitted_data->associated_group_id;
+	$associated_group_id = isset( buddypress()->bp_docs->submitted_data->associated_group_id ) ? buddypress()->bp_docs_submitted_data->associated_group_id : null;
+	if ( empty( $selected_group ) && ! empty( $associated_group_id ) ) {
+		$selected_group = $associated_group_id;
 	}
 
 	$selected_group = intval( $selected_group );
@@ -1172,8 +1191,9 @@ function bp_docs_access_options_helper( $settings_field, $doc_id = 0, $group_id 
 	$doc_settings = bp_docs_get_doc_settings( $doc_id, $settings_type, $group_id );
 
 	// If this is a failed form submission, check the submitted values first
-	if ( ! empty( buddypress()->bp_docs->submitted_data->settings->{$settings_field['name']} ) ) {
-		$setting = buddypress()->bp_docs->submitted_data->settings->{$settings_field['name']};
+	$field_name = isset( buddypress()->bp_docs->submitted_data->settings->{$settings_field['name']} ) ? buddypress()->bp_docs->submitted_data->setings->{$settings_field['name']} : null;
+	if ( ! empty( $field_name ) ) {
+		$setting = $field_name;
 	} else {
 		$setting = isset( $doc_settings[ $settings_field['name'] ] ) ? $doc_settings[ $settings_field['name'] ] : '';
 	}
