@@ -265,6 +265,14 @@ function bp_docs_info_header() {
 			$filter_args = wp_list_pluck( $filter_args, 'query_arg' );
 			$filter_args = array_merge( $filter_args, array( 'search_submit', 'folder' ) );
 
+			$view_all_url = remove_query_arg( $filter_args );
+
+			// Try to remove any pagination arguments.
+			$view_all_url = remove_query_arg( 'p', $view_all_url );
+			$view_all_url = preg_replace( '|page/[0-9]+/|', '', $view_all_url );
+
+			$message .= ' - ' . sprintf( __( '<strong><a href="%s" title="View All Docs">View All Docs</a></strong>', 'buddypress-docs' ), $view_all_url );
+
 			// XTEC ************ AFEGIT - Added support for multitag
 			// 2016.04.27 @sarjona
 			// 2016.10.10 @xaviernietosanchez

@@ -28,7 +28,7 @@ window.wp = window.wp || {};
 			success: function(s) {
 				$('#doc-attachments-ul').prepend(s.data);
 				file_frame.close();
-				// XTEC ************ AFEGIT ­Fix when attachment image into new document, no show image to select it
+				// XTEC ************ AFEGIT - Fix when attachment image into new document, no show image to select it
 				// 2016.07.05 @xaviernietosanchez
 				change_select_to_show_image();
 				// ************ FI
@@ -69,7 +69,7 @@ window.wp = window.wp || {};
 		} );
 	});
 
-	// XTEC ************ AFEGIT ­Fix when attachment image into new document, no show image to select it
+	// XTEC ************ AFEGIT - Fix when attachment image into new document, no show image to select it
 	// 2016.07.05 @xaviernietosanchez
 	function change_select_to_show_image(id){
 		if ( $('#media-attachment-filters').length > 0 ){

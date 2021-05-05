@@ -1208,7 +1208,8 @@ function bp_docs_force_unique_slugs( $slug, $post_ID, $post_status, $post_type, 
 }
 add_filter( 'wp_unique_post_slug', 'bp_docs_force_unique_slugs', 10, 6 );
 
-// XTEC ************ AFEGIT ­ Suggest labels into documents - bp-docs - 2016.06.23 @xaviernietosanchez
+// XTEC ************ AFEGIT - Suggest labels into documents
+// 2016.06.23 @xaviernietosanchez
 function add_suggest_script() {
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'jquery-ui-autocomplete' );
