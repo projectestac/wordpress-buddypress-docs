@@ -1,4 +1,4 @@
-// XTEC ************ AFEGIT ­ JQuery script to show different options for suggest labels
+// XTEC ************ AFEGIT - JQuery script to show different options for suggest labels
 // 2016.06.23 @xaviernietosanchez
 (function( $ ) {
 	$(function() {

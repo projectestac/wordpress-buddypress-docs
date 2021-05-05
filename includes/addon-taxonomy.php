@@ -389,11 +389,20 @@ class BP_Docs_Taxonomy {
 
 					?>
 					<li>
+
 					<?php
-						// XTEC ************ MODIFICAT - Add style for selected tags - 2016.04.27 @sarjona
-						$tags = explode( ',', urldecode( $_GET['bpd_tag'] ) );
+					// XTEC ************ MODIFICAT - Added support for selected tags
+					// 2016.04.27 @sarjona
+					$tags = explode( ',', urldecode( $_GET['bpd_tag'] ) );
 					?>
 					<a href="<?php echo bp_docs_get_tag_link_multitag( array( 'tag' => $term, 'type' => 'url', 'tags' => $tags ) ) ?>" title="<?php echo esc_html( $term_name ) ?>" <?php echo (in_array($term, $tags)?' class="selected-tag"':''); ?> ><?php echo esc_html( $term_name ) ?> <?php printf( __( '(%d)', 'bp-docs' ), $term_count ) ?></a>
+
+					<!--//************ ORIGINAL-->
+					<!--
+					<a href="<?php echo bp_docs_get_tag_link( array( 'tag' => $term, 'type' => 'url' ) ) ?>" title="<?php echo esc_html( $term_name ) ?>"><?php echo esc_html( $term_name ) ?> <?php printf( __( '(%d)', 'buddypress-docs' ), $term_count ) ?></a>
+					-->
+					<!--//************ FI-->
+
 					</li>
 
 				<?php endforeach ?>

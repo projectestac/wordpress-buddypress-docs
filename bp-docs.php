@@ -326,7 +326,7 @@ class BP_Docs {
 */
 //************ FI
 
-        ) );
+		) );
 
 		// Register the bp_doc post type
 		register_post_type( $this->post_type_name, $bp_docs_post_type_args );
