@@ -882,6 +882,16 @@ class BP_Docs_Attachments {
 			file_put_contents( $test_dir . DIRECTORY_SEPARATOR . 'test.html', $test_text );
 		}
 
+        // XTEC ************ MODIFICAT - Removed URL call to avoid incorrect calls to bare domain.
+        // The file bp-attachments/0/.htaccess is incorrect because Àgora makes a URL rewrite and that causes
+        // the security check to be always incorrect. Direct file access is not possible due to the URL rewriting,
+        // so it can be removed safely.
+        // 2021.06.06 @aginard
+
+        $is_protected = true;
+
+        // ************ ORIGINAL
+        /*
 		$test_url = $uploads['baseurl'] . '/bp-attachments/0/test.html';
 		$r = wp_remote_get( $test_url );
 
@@ -890,6 +900,8 @@ class BP_Docs_Attachments {
 		if ( ! is_wp_error( $r ) && $r['body'] === $test_text ) {
 			$is_protected = false;
 		}
+        */
+        // ************ FI
 
 		// Cache
 		$cache = $is_protected ? '1' : '0';
