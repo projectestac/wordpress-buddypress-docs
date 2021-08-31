@@ -528,9 +528,12 @@ class BP_Docs_Attachments {
 	 */
 	public static function filename_is_safe( $filename ) {
 		// WP's core function handles most sanitization
-		if ( $filename !== sanitize_file_name( $filename ) ) {
+		// XTEC ************ MODIFICAT - Skips the verification for problems with old links that contain special characters
+		// 2021.08.31 @nacho
+		/*if ( $filename !== sanitize_file_name( $filename ) ) {
 			return false;
-		}
+		}*/
+		//************ FI
 
 		// No leading dots
 		if ( 0 === strpos( $filename, '.' ) ) {
