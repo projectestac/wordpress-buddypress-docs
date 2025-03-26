@@ -129,7 +129,7 @@ jQuery(document).ready(function($){
 	$('.docs-filter-title').on('click',function(e){
 		var filter_title = $(this);
 		var filter_title_id = filter_title.attr('id');
-		var filter_id = filter_title_id.split('-').pop();
+		var filter_id = filter_title_id.replace('docs-filter-title-', '');
 		var filter_to_show_id = 'docs-filter-section-' + filter_id;
 		var showing_filter_id = $('.docs-filter-section-open').attr('id');
 
@@ -216,8 +216,10 @@ jQuery(document).ready(function($){
 	function tags_section_collapse( $section ) {
 		$section.find( 'a.tags-hide' ).remove();
 
+		var hide_counter = 0;
 		$dfsection_tags_items.each( function( k, v ) {
-			if ( k > 6 ) {
+			hide_counter++;
+			if ( hide_counter > bpDocsConfig.tagCloudCount ) {
 				$( v ).addClass( 'hidden-tag' );
 				hidden_tag_counter++;
 			}
@@ -229,7 +231,7 @@ jQuery(document).ready(function($){
 
 		$dfsection_tags_list.append( '<li class="tags-ellipses">' + st + '</li>' );
 
-		$dfsection_tags.prepend( '<a class="tags-unhide tags-action-button tags-spanning-button" href="#">show all tags</a>' );
+		$dfsection_tags.prepend( '<a class="tags-unhide tags-action-button tags-spanning-button" href="#">' + bp_docs.show_all_tags + '</a>' );
 	}
 
 	/**
@@ -239,7 +241,7 @@ jQuery(document).ready(function($){
 		$section.find( 'a.tags-unhide' ).remove();
 		$section.find( '.tags-ellipses' ).remove();
 		$dfsection_tags_items.removeClass( 'hidden-tag' );
-		$dfsection_tags.prepend( '<a class="tags-hide tags-action-button tags-spanning-button" href="#">show fewer tags</a>' );
+		$dfsection_tags.prepend( '<a class="tags-hide tags-action-button tags-spanning-button" href="#">' + bp_docs.show_fewer_tags + '</a>' );
 		hidden_tag_counter = 0;
 	}
 

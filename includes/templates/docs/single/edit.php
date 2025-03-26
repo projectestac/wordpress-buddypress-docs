@@ -7,7 +7,7 @@ if ( $current_doc ) {
 
 $bp_docs_do_theme_compat = is_buddypress() && bp_docs_do_theme_compat( 'single/edit.php' );
 if ( ! $bp_docs_do_theme_compat ) : ?>
-<div id="buddypress">
+<div id="buddypress" class="<?php bp_docs_buddypress_container_class(); ?>">
 <?php endif; ?>
 
 <div class="<?php bp_docs_container_class(); ?>">
@@ -33,7 +33,7 @@ if ( ! $bp_docs_do_theme_compat ) : ?>
 	<form action="" method="post" class="standard-form" id="doc-form">
 	    <div class="doc-header">
 		<?php if ( bp_docs_is_existing_doc() ) : ?>
-			<input type="hidden" id="existing-doc-id" value="<?php echo $doc_id; ?>" />
+			<input type="hidden" id="existing-doc-id" value="<?php echo esc_attr( $doc_id );; ?>" />
 		<?php endif ?>
 	    </div>
 	    <div class="doc-content-wrapper">
@@ -45,7 +45,7 @@ if ( ! $bp_docs_do_theme_compat ) : ?>
 		<?php if ( bp_docs_is_existing_doc() ) : ?>
 			<div id="doc-content-permalink">
 				<label for="doc-permalink"><?php _e( 'Permalink', 'buddypress-docs' ) ?></label>
-				<code><?php echo trailingslashit( bp_get_root_domain() ) . bp_docs_get_docs_slug() . '/' ?></code><input type="text" id="doc-permalink" name="doc[permalink]" class="long" value="<?php bp_docs_edit_doc_slug() ?>" />
+				<code><?php echo esc_html( bp_docs_get_archive_link() ); ?></code><input type="text" id="doc-permalink" name="doc[permalink]" class="long" value="<?php bp_docs_edit_doc_slug() ?>" />
 			</div>
 		<?php endif ?>
 
@@ -189,7 +189,7 @@ if ( ! $bp_docs_do_theme_compat ) : ?>
 
 			<?php wp_nonce_field( 'bp_docs_save' ) ?>
 
-			<input type="hidden" id="doc_id" name="doc_id" value="<?php echo $doc_id ?>" />
+			<input type="hidden" id="doc_id" name="doc_id" value="<?php echo esc_attr( $doc_id ); ?>" />
 			<input type="submit" name="doc-edit-submit" id="doc-edit-submit" value="<?php _e( 'Save', 'buddypress-docs' ) ?>"> <input type="submit" name="doc-edit-submit-continue" id="doc-edit-submit-continue" value="<?php echo esc_attr( _e( 'Save and Continue Editing', 'buddypress-docs' ) ); ?>" /> <a href="<?php bp_docs_cancel_edit_link() ?>" class="action safe confirm"><?php _e( 'Cancel', 'buddypress-docs' ); ?></a>
 
 			<?php if ( bp_docs_is_existing_doc() ) : ?>

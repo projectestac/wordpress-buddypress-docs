@@ -1,7 +1,7 @@
 <?php
 $bp_docs_do_theme_compat = is_buddypress() && bp_docs_do_theme_compat( 'single/index.php' );
 if ( ! $bp_docs_do_theme_compat ) : ?>
-<div id="buddypress">
+<div id="buddypress" class="<?php bp_docs_buddypress_container_class(); ?>">
 <?php endif; ?>
 
 <div class="<?php bp_docs_container_class(); ?>">
@@ -15,10 +15,10 @@ if ( ! $bp_docs_do_theme_compat ) : ?>
 		<div class="toggleable doc-is-locked">
 			<span class="toggle-switch" id="toggle-doc-is-locked"><?php _e( 'Locked', 'buddypress-docs' ) ?> <span class="hide-if-no-js description"><?php _e( '(click for more info)', 'buddypress-docs' ) ?></span></span>
 			<div class="toggle-content">
-				<p><?php printf( __( 'This doc is currently being edited by %1$s. In order to prevent edit conflicts, only one user can edit a doc at a time.', 'buddypress-docs' ), bp_docs_get_current_doc_locker_name() ) ?></p>
+				<p><?php echo esc_html( sprintf( __( 'This doc is currently being edited by %1$s. In order to prevent edit conflicts, only one user can edit a doc at a time.', 'buddypress-docs' ), bp_docs_get_current_doc_locker_name() ) ); ?></p>
 
 				<?php if ( is_super_admin() || ( bp_is_active( 'groups' ) && bp_is_group() && bp_group_is_admin() ) ) : ?>
-					<p><?php printf( __( 'Please try again in a few minutes. Or, as an admin, you can <a href="%s">force cancel</a> the edit lock.', 'buddypress-docs' ), bp_docs_get_force_cancel_edit_lock_link() ) ?></p>
+					<p><?php echo wp_kses_post( sprintf( __( 'Please try again in a few minutes. Or, as an admin, you can <a href="%s">force cancel</a> the edit lock.', 'buddypress-docs' ), esc_url( bp_docs_get_force_cancel_edit_lock_link() ) ) ); ?></p>
 				<?php else : ?>
 					<p><?php _e( 'Please try again in a few minutes.', 'buddypress-docs' ) ?></p>
 				<?php endif ?>

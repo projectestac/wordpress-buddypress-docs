@@ -13,6 +13,8 @@ class BP_Docs_Folders {
 	 * @since 1.9
 	 */
 	public function __construct() {
+		$this->register_ajax_actions();
+
 		if ( ! bp_docs_enable_folders() ) {
 			return;
 		}
@@ -69,12 +71,12 @@ class BP_Docs_Folders {
 		) );
 
 		register_taxonomy( 'bp_docs_folder_in_user', 'bp_docs_folder', array(
-			'public' => true,
+			'public' => false,
 		) );
 
 		if ( bp_is_active( 'groups' ) ) {
 			register_taxonomy( 'bp_docs_folder_in_group', 'bp_docs_folder', array(
-				'public' => true,
+				'public' => false,
 			) );
 		}
 	}
@@ -194,6 +196,35 @@ class BP_Docs_Folders {
 			'folders_tab_label_groups' => _x( 'Group Folders', 'Doc edit tab name', 'buddypress-docs' ),
 			'force_metabox' => $force_folders_metabox,
 		) );
+	}
+
+	/**
+	 * Register AJAX actions.
+	 *
+	 * Required by BuddyPress 12+, so that context information like "current group"
+	 * is available during our AJAX callbacks.
+	 *
+	 * @since 2.2.3
+	 *
+	 * @return void
+	 */
+	public function register_ajax_actions() {
+		if ( ! function_exists( 'bp_ajax_register_action' ) ) {
+			return;
+		}
+
+		$ajax_actions = array(
+			'bp_docs_update_folders',
+			'bp_docs_update_parent_folders',
+			'bp_docs_update_folder_type',
+			'bp_docs_update_folder_type_for_group',
+			'bp_docs_process_folder_drop',
+			'bp_docs_get_folder_content',
+		);
+
+		foreach ( $ajax_actions as $action ) {
+			bp_ajax_register_action( $action );
+		}
 	}
 }
 
@@ -427,6 +458,43 @@ function bp_docs_get_folder_user( $folder_id ) {
 	}
 
 	return $user_id;
+}
+
+/**
+ * Get the ID of the folder from a term ID.
+ *
+ * @param int $folder_id ID of term.
+ * @param string $taxonomy Taxonomy of the term.
+ * @return int|bool ID of folder if found, otherwise false.
+ */
+function bp_docs_get_folder_id_from_term_id( $term_id, $taxonomy ) {
+	$folder_id = false;
+
+	$folder_term = get_term_by( 'id', $term_id, $taxonomy );
+	if ( ! empty( $folder_term->slug ) ) {
+		$substr_length = strlen( $folder_term->taxonomy ) + 1;
+		$folder_id = intval( substr( $folder_term->slug, $substr_length ) );
+	}
+
+	return $folder_id;
+}
+
+/**
+ * Get the ID of the folder from a taxonomy_term_id.
+ *
+ * @param int $folder_id Taxonomy term ID of term.
+ * @return int|bool ID of folder if found, otherwise false.
+ */
+function bp_docs_get_folder_id_from_tax_term_id( $tt_id ) {
+	$folder_id = false;
+
+	$folder_term = get_term_by( 'term_taxonomy_id', $tt_id );
+	if ( ! empty( $folder_term->slug ) ) {
+		$substr_length = strlen( $folder_term->taxonomy ) + 1;
+		$folder_id = intval( substr( $folder_term->slug, $substr_length ) );
+	}
+
+	return $folder_id;
 }
 
 /**
@@ -741,6 +809,12 @@ function bp_docs_get_folders( $args = array() ) {
 		$order = 'ASC';
 	}
 
+	// Order by
+	$orderby = 'title';
+	if ( isset( $_GET['orderby'] ) && 'modified' === strtolower( $_GET['orderby'] ) ) {
+		$orderby = 'modified';
+	}
+
 	// Default search terms
 	$search_terms = null;
 	if ( ! empty( $_GET['s'] ) ) {
@@ -778,7 +852,7 @@ function bp_docs_get_folders( $args = array() ) {
 
 	$post_args = array(
 		'post_type' => 'bp_docs_folder',
-		'orderby' => 'title',
+		'orderby' => $orderby,
 		'order' => $order,
 		'posts_per_page' => '-1',
 		'tax_query' => array(),
@@ -1702,6 +1776,7 @@ function bp_docs_folder_selector( $args = array() ) {
 	if ( false === $r['echo'] ) {
 		return $retval;
 	} else {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $retval;
 	}
 }
@@ -1755,6 +1830,7 @@ function bp_docs_folder_type_selector( $args = array() ) {
 	if ( false === $r['echo'] ) {
 		return $type_selector;
 	} else {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $type_selector;
 	}
 }
@@ -1861,7 +1937,7 @@ function bp_docs_create_new_folder_markup( $args = array() ) {
 
 	<div style="clear:both"></div>
 
-	<div class="folder-type-selector-div <?php echo $folder_type_class ?>">
+	<div class="folder-type-selector-div <?php echo esc_url( $folder_type_class ); ?>">
 		<label for="new-folder-type"><?php _e( 'Folder type', 'buddypress-docs' ) ?></label>
 		<?php bp_docs_folder_type_selector( array(
 			'selected' => $r['selected'],
@@ -1982,7 +2058,7 @@ function bp_docs_display_folder_meta() {
 	echo sprintf(
 		'<p class="folder-meta" data-folder-id="%d">%s<a href="%s">%s</a>',
 		esc_attr( $folder_id ),
-		bp_docs_get_genericon( 'category', $folder_id ),
+		bp_docs_get_genericon( 'category', $folder_id ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		esc_url( bp_docs_get_folder_url( $folder_id ) ),
 		esc_attr( $folder->post_title )
 	);
@@ -2061,7 +2137,7 @@ function bp_docs_get_parent_folder_url( $folder_id = null ) {
  * @since 1.9.0
  */
 function bp_docs_manage_folders_url() {
-	echo bp_docs_get_manage_folders_url();
+	echo esc_url( bp_docs_get_manage_folders_url() );
 }
 	/**
 	 * Generate a manage-folders URL relative to the current context.
@@ -2517,3 +2593,223 @@ function bp_docs_folders_invalidate_last_changed_incrementor() {
 add_action( 'save_post_bp_doc', 'bp_docs_folders_invalidate_last_changed_incrementor' );
 add_action( 'trashed_post', 'bp_docs_folders_invalidate_last_changed_incrementor' );
 add_action( 'set_object_terms', 'bp_docs_folders_invalidate_last_changed_incrementor' );
+
+/**
+ * Find most recently updated content date for a folder.
+ *
+ * @since 2.2.0
+ * @param $folder_id
+ * @return false|string false if not found, MySQL date string of recently updated content.
+ */
+function bp_docs_folders_calculate_modified_date( $folder_id = 0 ) {
+	$retval = false;
+	if ( ! $folder_id ) {
+		return $retval;
+	}
+
+	$subfolder_ids   = bp_folders_get_descendant_folder_ids( $folder_id );
+	$subfolder_ids[] = $folder_id;
+	$terms           = array();
+	foreach ( $subfolder_ids as $subfolder_id ) {
+		$terms[] = bp_docs_get_folder_term( $subfolder_id );
+	}
+	// Need to remove doc access protection, else different users will get different answers.
+	remove_action( 'pre_get_posts', 'bp_docs_general_access_protection', 28 );
+	$last_mod = new WP_Query(
+		array(
+			'post_type'      => bp_docs_get_post_type_name(),
+			'orderby'        => 'modified',
+			'posts_per_page' => '1',
+			'tax_query'      => array(
+				array(
+					'taxonomy' => 'bp_docs_doc_in_folder',
+					'field'    => 'term_id',
+					'terms'    => $terms,
+				),
+			)
+		)
+	);
+	add_action( 'pre_get_posts', 'bp_docs_general_access_protection', 28 );
+
+	if ( ! empty( $last_mod->post->post_modified ) ) {
+		$retval = $last_mod->post->post_modified;
+	}
+
+	return $retval;
+}
+
+/**
+ * Get all of the descendant folders of a specified folder.
+ *
+ * @since 2.2.0
+ * @param $folder_id int Folder ID to find descendants of.
+ * @return array Array of folder IDs.
+ */
+function bp_folders_get_descendant_folder_ids( $folder_id = 0 ) {
+	$folder_ids = array();
+	if ( ! $folder_id ) {
+		return $folder_ids;
+	}
+
+	$args = array(
+		'post_parent__in' => array( $folder_id ),
+		'post_type'       => 'bp_docs_folder',
+		'fields'          => 'ids',
+	);
+	$subfolder_ids = get_posts( $args );
+
+	while ( $subfolder_ids ) {
+		$folder_ids = array_merge( $folder_ids, $subfolder_ids );
+
+		// Next level
+		$args['post_parent__in'] = $subfolder_ids;
+		$subfolder_ids           = get_posts( $args );
+	}
+
+    return $folder_ids;
+}
+
+/**
+ * Set the modified date for a specified folder.
+ * This function will work through all ancestor folders to
+ * recalculate the modified date for each.
+ *
+ * @since 2.2.0
+ * @param $folder_id int Folder ID to update.
+ * @return array Array of folder IDs.
+ */
+function bp_docs_folders_update_folder_modified_date( $folder_id = 0 ) {
+
+	if ( $folder_id ) {
+		$last_mod_date = bp_docs_folders_calculate_modified_date( $folder_id );
+		if ( $last_mod_date ) {
+			wp_update_post(
+				array(
+					'ID'            => $folder_id,
+					'modified_date' => $last_mod_date,
+				)
+			);
+		}
+		$parent_folder = wp_get_post_parent_id( $folder_id );
+		while ( $parent_folder ) {
+			$last_mod_date = bp_docs_folders_calculate_modified_date( $parent_folder );
+			if ( $last_mod_date ) {
+				wp_update_post(
+					array(
+						'ID'            => $parent_folder,
+						'modified_date' => $last_mod_date,
+					)
+				);
+			}
+
+			$parent_folder = wp_get_post_parent_id( $parent_folder );
+		}
+	}
+}
+
+/**
+ * Update folder modified dates when a doc is saved via WP Admin.
+ *
+ * @since 2.2.0
+ * @param $doc_id int Doc ID updated.
+ */
+function bp_docs_folders_update_folder_modified_date_from_wpadmin( $doc_id ) {
+
+	if ( is_admin() && ! wp_doing_ajax() ) {
+		$folder_id = bp_docs_get_doc_folder( $doc_id );
+		bp_docs_folders_update_folder_modified_date( $folder_id );
+	}
+}
+add_action( 'save_post_bp_doc', 'bp_docs_folders_update_folder_modified_date_from_wpadmin' );
+
+/**
+ * Update folder modified dates when a doc is saved via BP Docs frontend.
+ * The folder term isn't yet applied at 'save_post_bp_doc' with front-end saves,
+ * so we use a different action hook.
+ *
+ * @since 2.2.0
+ * @param $doc_id int Doc ID updated.
+ */
+function bp_docs_folders_update_folder_modified_date_from_front( $doc_id ) {
+
+	$folder_id = bp_docs_get_doc_folder( $doc_id );
+	bp_docs_folders_update_folder_modified_date( $folder_id );
+}
+add_action( 'bp_docs_after_save', 'bp_docs_folders_update_folder_modified_date_from_front', 32 );
+
+/**
+ * Update folder modified dates when a doc is trashed.
+ *
+ * @since 2.2.0
+ * @param $doc_id int Doc ID updated.
+ */
+function bp_docs_folders_update_folder_modified_date_on_trash( $doc_id ) {
+
+	$folder_id = bp_docs_get_doc_folder( $doc_id );
+	bp_docs_folders_update_folder_modified_date( $folder_id );
+}
+add_action( 'trashed_post', 'bp_docs_folders_update_folder_modified_date_on_trash' );
+
+/**
+ * Update folder modified dates when a doc is trashed by BP Docs action.
+ *
+ * @since 2.2.0
+ * @param $doc_id int Doc ID updated.
+ */
+function bp_docs_folders_update_folder_modified_date_on_doc_deleted( $delete_args ) {
+
+	if ( ! empty( $delete_args['ID'] ) ) {
+		bp_docs_folders_update_folder_modified_date_on_trash( $delete_args['ID'] );
+	}
+}
+add_action( 'bp_docs_doc_deleted', 'bp_docs_folders_update_folder_modified_date_on_doc_deleted' );
+
+/**
+ * Update folder modified dates when set_object_terms is run on a doc.
+ * Runs when a doc is moved between folders, but not when just moved out to "no folder."
+ *
+ * @since 2.2.0
+ * @param int    $object_id  Object ID.
+ * @param array  $terms      An array of object terms.
+ * @param array  $tt_ids     An array of term taxonomy IDs.
+ * @param string $taxonomy   Taxonomy slug.
+ * @param bool   $append     Whether to append new terms to the old terms.
+ * @param array  $old_tt_ids Old array of term taxonomy IDs.
+ */
+function bp_docs_folders_update_folder_modified_date_on_term_update( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
+
+	if ( 'bp_docs_doc_in_folder' !== $taxonomy ) {
+		return;
+	}
+
+	if ( $changed_folder_term_ids = array_merge( $old_tt_ids, $tt_ids ) ) {
+		foreach ( $changed_folder_term_ids as $tt_id ) {
+			$folder_id = bp_docs_get_folder_id_from_tax_term_id( $tt_id );
+			bp_docs_folders_update_folder_modified_date( $folder_id );
+		}
+	}
+}
+add_action( 'set_object_terms', 'bp_docs_folders_update_folder_modified_date_on_term_update', 10, 6 );
+
+/**
+ * Update folder modified dates when a doc is removed from a folder.
+ * Runs when a doc is removed from a folder.
+ *
+ * @since 2.2.0
+ * @param int    $object_id Object ID.
+ * @param array  $tt_ids    An array of term taxonomy IDs.
+ * @param string $taxonomy  Taxonomy slug.
+ */
+function bp_docs_folders_update_folder_modified_date_on_deleted_term_relationships( $object_id, $tt_ids, $taxonomy ) {
+
+	if ( 'bp_docs_doc_in_folder' !== $taxonomy ) {
+		return;
+	}
+
+	foreach ( $tt_ids as $tt_id ) {
+		$folder_id = bp_docs_get_folder_id_from_tax_term_id( $tt_id );
+		bp_docs_folders_update_folder_modified_date( $folder_id );
+	}
+}
+add_action( 'deleted_term_relationships', 'bp_docs_folders_update_folder_modified_date_on_deleted_term_relationships', 10, 3 );
+
